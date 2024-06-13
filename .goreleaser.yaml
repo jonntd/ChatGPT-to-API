@@ -1,16 +1,13 @@
 version: 1
 
-project_name: chatgpt-adapter
+project_name: chatgpt-to-api
 before:
-  # https://goreleaser.com/customization/hooks/
   hooks:
-    # tidy up and lint
     - go mod tidy
     # - go fmt ./...
 builds:
-  # https://goreleaser.com/customization/build/
   - main: ./main.go
-    binary: chatgpt-adapter
+    binary: chatgpt-to-api
     env:
       - CGO_ENABLED=0
     goos:
@@ -34,90 +31,6 @@ builds:
       - -trimpath
     ldflags:
       - -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{ .CommitDate }} -X main.builtBy=goreleaser -X main.treeState={{ .IsGitDirty }}
-    
-dockers:
-  # https://goreleaser.com/customization/docker/
-  - use: buildx
-    goos: linux
-    goarch: amd64
-    image_templates:
-      - "ghcr.io/jonntd/{{ .ProjectName }}:{{ .Version }}-amd64"
-      - "ghcr.io/jonntd/{{ .ProjectName }}:latest-amd64"
-    build_flag_templates:
-      - "--pull"
-      - "--label=org.opencontainers.image.created={{.Date}}"
-      - "--label=org.opencontainers.image.title={{.ProjectName}}"
-      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
-      - "--label=org.opencontainers.image.version={{.Version}}"
-      - "--label=org.opencontainers.image.source={{.GitURL}}"
-      - "--platform=linux/amd64"
-    extra_files:
-      - ./config.yaml
-  - use: buildx
-    goos: linux
-    goarch: arm64
-    image_templates:
-      - "ghcr.io/jonntd/{{ .ProjectName }}:{{ .Version }}-arm64v8"
-      - "ghcr.io/jonntd/{{ .ProjectName }}:latest-arm64v8"
-    build_flag_templates:
-      - "--pull"
-      - "--label=org.opencontainers.image.created={{.Date}}"
-      - "--label=org.opencontainers.image.title={{.ProjectName}}"
-      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
-      - "--label=org.opencontainers.image.version={{.Version}}"
-      - "--label=org.opencontainers.image.source={{.GitURL}}"
-      - "--platform=linux/arm64/v8"
-    extra_files:
-      - ./config.yaml
-  - use: buildx
-    goos: linux
-    goarch: arm
-    goarm: 6
-    image_templates:
-      - "ghcr.io/jonntd/{{ .ProjectName }}:{{ .Version }}-armv6"
-      - "ghcr.io/jonntd/{{ .ProjectName }}:latest-armv6"
-    build_flag_templates:
-      - "--pull"
-      - "--label=org.opencontainers.image.created={{.Date}}"
-      - "--label=org.opencontainers.image.title={{.ProjectName}}"
-      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
-      - "--label=org.opencontainers.image.version={{.Version}}"
-      - "--label=org.opencontainers.image.source={{.GitURL}}"
-      - "--platform=linux/arm/v6"
-    extra_files:
-      - ./config.yaml
-  - use: buildx
-    goos: linux
-    goarch: arm
-    goarm: 7
-    image_templates:
-      - "ghcr.io/jonntd/{{ .ProjectName }}:{{ .Version }}-armv7"
-      - "ghcr.io/jonntd/{{ .ProjectName }}:latest-armv7"
-    build_flag_templates:
-      - "--pull"
-      - "--label=org.opencontainers.image.created={{.Date}}"
-      - "--label=org.opencontainers.image.title={{.ProjectName}}"
-      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
-      - "--label=org.opencontainers.image.version={{.Version}}"
-      - "--label=org.opencontainers.image.source={{.GitURL}}"
-      - "--platform=linux/arm/v7"
-
-    extra_files:
-      - ./config.yaml
-docker_manifests:
-  # https://goreleaser.com/customization/docker_manifest/
-  - name_template: ghcr.io/jonntd/{{ .ProjectName }}:{{ .Version }}
-    image_templates:
-      - ghcr.io/jonntd/{{ .ProjectName }}:{{ .Version }}-amd64
-      - ghcr.io/jonntd/{{ .ProjectName }}:{{ .Version }}-arm64v8
-      - ghcr.io/jonntd/{{ .ProjectName }}:{{ .Version }}-armv6
-      - ghcr.io/jonntd/{{ .ProjectName }}:{{ .Version }}-armv7
-  - name_template: ghcr.io/jonntd/{{ .ProjectName }}:latest
-    image_templates:
-      - ghcr.io/jonntd/{{ .ProjectName }}:latest-amd64
-      - ghcr.io/jonntd/{{ .ProjectName }}:latest-arm64v8
-      - ghcr.io/jonntd/{{ .ProjectName }}:latest-armv6
-      - ghcr.io/jonntd/{{ .ProjectName }}:latest-armv7
 archives:
   - id: archive
     name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}_v{{ .Arm }}{{ end }}"
@@ -134,4 +47,4 @@ snapshot:
   name_template: "{{ incpatch .Version }}-SNAPSHOT"
 source:
   # https://goreleaser.com/customization/source/
-  enabled: true
+  enabled: false
