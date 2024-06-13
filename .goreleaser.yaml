@@ -6,8 +6,7 @@ before:
     - go mod tidy
     # - go fmt ./...
 builds:
-  - main: ./main.go
-    binary: chatgpt-to-api
+  - binary: chatgpt-to-api
     env:
       - CGO_ENABLED=0
     goos:
